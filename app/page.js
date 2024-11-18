@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import MapScreen from '@/components/MapScreen';
-import Header from '@/components/Header';
+import Header from '@/components/header';
 async function getLocationData() {
   const sql = neon(process.env.DATABASE_URL);
   const response = await sql`SELECT * FROM sensor`;
