@@ -9,8 +9,7 @@ async function getLocationData() {
   const response = await sql`
     SELECT tempdataid, date_time, temp_f, rel_humid, dew_point_f, skyview_factor, sensorid
     FROM temp_data
-    ORDER BY date_time DESC
-    LIMIT 50;
+    ORDER BY date_time DESC;
   `;
 
   return response;
