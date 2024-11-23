@@ -4,7 +4,7 @@ import Header from '@/components/header';
 async function getLocationData() {
   const sql = neon(process.env.DATABASE_URL);
   const response = await sql`SELECT * FROM sensor`;
-  const temp_data = await sql`SELECT tempdataid, date_time, temp_f, rel_humid, dew_point_f, skyview_factor, sensorid
+  const temp_data = await sql`SELECT tempdataid, date_time, temp_f, rel_humid, dew_point_f, sensorid
 FROM (
   SELECT *,
          ROW_NUMBER() OVER (PARTITION BY sensorid ORDER BY date_time DESC) AS rn

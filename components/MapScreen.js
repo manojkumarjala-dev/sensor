@@ -41,19 +41,40 @@ const MapScreen = memo(({ locations }) => {
 
         {selectedLocation && (
           <Popup
-            longitude={selectedLocation.longitude}
-            latitude={selectedLocation.latitude}
-            anchor="top"
-            onClose={() => setSelectedLocation(null)}
-            closeOnClick={false}
-          >
-            <div style={{ color: 'black' }}> {/* Set text color to black */}
-              <h4>Sensor ID: {selectedLocation.sensorid}</h4>
-              <p>Temperature: {selectedLocation.temp_f} °F</p>
-              <p>Humidity: {selectedLocation.rel_humid} %</p>
-              <p>Dew Point: {selectedLocation.dew_point_f} °F</p>
+          longitude={selectedLocation.longitude}
+          latitude={selectedLocation.latitude}
+          anchor="top"
+          onClose={() => setSelectedLocation(null)}
+          closeOnClick={false}
+        >
+          <div style={{
+            backgroundColor: 'white',
+            padding: '1em',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            maxWidth: '200px',
+            textAlign: 'center',
+          }}>
+            <h4 style={{
+              margin: '0 0 0.5em 0',
+              color: '#333',
+              fontSize: '1.1em',
+              fontWeight: 'bold',
+            }}>Sensor ID: {selectedLocation.sensorid}</h4>
+            <div style={{ borderTop: '1px solid #eee', paddingTop: '0.5em' }}>
+              <p style={{ margin: '0.5em 0', color: '#666', fontSize: '0.9em' }}>
+                <strong>Temperature:</strong> {selectedLocation.temp_f} °F
+              </p>
+              <p style={{ margin: '0.5em 0', color: '#666', fontSize: '0.9em' }}>
+                <strong>Humidity:</strong> {selectedLocation.rel_humid} %
+              </p>
+              <p style={{ margin: '0.5em 0', color: '#666', fontSize: '0.9em' }}>
+                <strong>Dew Point:</strong> {selectedLocation.dew_point_f} °F
+              </p>
             </div>
-          </Popup>
+          </div>
+        </Popup>
+        
         )}
       </Map>
     </div>

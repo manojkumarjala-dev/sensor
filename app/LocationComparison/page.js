@@ -6,36 +6,38 @@ import Header from '@/components/header';
 async function getLocationData() {
   const sql = neon(process.env.DATABASE_URL);
 
-  // Fetch all sensors with their latest temperature data
+  // Fetch all active sensors with their details
   const sensors = await sql`
     SELECT sensorid, latitude, longitude, location
     FROM sensor
+    WHERE status = 'ACTIVE'
   `;
 
-  const latestTemperatureEntries = await sql`
-    SELECT tempdataid, date_time, temp_f, rel_humid, dew_point_f, skyview_factor, sensorid
-    FROM (
-      SELECT *,
-             ROW_NUMBER() OVER (PARTITION BY sensorid ORDER BY date_time DESC) AS rn
-      FROM temp_data
-    ) AS latest
-    WHERE rn = 1;
-  `;
+  // Fetch latest temperature entries for active sensors
+  const allTemperatureEntries = await sql`
+  SELECT t.tempdataid, t.date_time, t.temp_f, t.rel_humid, t.dew_point_f, t.skyview_factor, t.sensorid, s.location, s.latitude, s.longitude
+  FROM temp_data t
+  INNER JOIN sensor s
+  ON t.sensorid = s.sensorid
+  WHERE s.status = 'ACTIVE'
+  ORDER BY t.sensorid, t.date_time ASC;
+`;
 
-  // Combine sensors with their latest temperature data
-  const locations = sensors.map(sensor => {
-    const tempData = latestTemperatureEntries.find(data => data.sensorid === sensor.sensorid);
+
+  // Combine latest temperature data with sensor location details
+  const combinedData = allTemperatureEntries.map(entry => {
+    const sensor = sensors.find(sensor => sensor.sensorid === entry.sensorid);
     return {
-      ...sensor,
-      temp_f: tempData?.temp_f || null,
-      rel_humid: tempData?.rel_humid || null,
-      dew_point_f: tempData?.dew_point_f || null,
-      date_time: tempData?.date_time || null,
+      ...entry,
+      location: sensor?.location || null,
+      latitude: sensor?.latitude || null,
+      longitude: sensor?.longitude || null,
     };
   });
 
-  return locations;
+  return combinedData;
 }
+
 
 export default async function LocationComparisonPage() {
   const locationsData = await getLocationData();
